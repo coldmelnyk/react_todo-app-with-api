@@ -28,10 +28,9 @@ export const TempTodoInput: React.FC<Props> = ({
   onTodos,
   onDeleteTodo,
   onArrayOfTodoId,
-  isLoading,
-  onLoading,
 }) => {
   const [upgradeTitle, setUpgradeTitle] = useState(todo.title);
+  const [focusTrigger, setFocusTrigger] = useState(false);
 
   const onSubmit = (
     event: FormEvent<HTMLFormElement> | FocusEvent<HTMLInputElement, Element>,
@@ -39,10 +38,9 @@ export const TempTodoInput: React.FC<Props> = ({
     event.preventDefault();
 
     if (todo.title !== upgradeTitle && upgradeTitle) {
-      onLoading(true);
       onArrayOfTodoId([todo.id]);
 
-      return updateTodo({ ...todo, title: upgradeTitle })
+      return updateTodo({ ...todo, title: upgradeTitle.trim() })
         .then(updatedTodo => {
           onTodos(currentTodos =>
             currentTodos.map(currentTodo =>
@@ -51,15 +49,21 @@ export const TempTodoInput: React.FC<Props> = ({
           );
           onTodoId(null);
         })
-        .catch(() => onErrorMessage(ErrorMessage.update))
+        .catch(() => {
+          setFocusTrigger(true);
+          onErrorMessage(ErrorMessage.update);
+        })
         .finally(() => {
           onArrayOfTodoId([]);
-          onLoading(true);
         });
     }
 
     if (!upgradeTitle) {
       return onDeleteTodo(todo.id);
+    }
+
+    if (todo.title === upgradeTitle) {
+      return onTodoId(null);
     }
 
     return;
@@ -71,11 +75,16 @@ export const TempTodoInput: React.FC<Props> = ({
     if (fieldFocus.current) {
       fieldFocus.current.focus();
     }
-  }, [isLoading]);
+  }, [focusTrigger]);
 
   return (
     <form onSubmit={event => onSubmit(event)}>
       <input
+        onKeyUp={event => {
+          if (event.key === 'Escape') {
+            return onTodoId(null);
+          }
+        }}
         ref={fieldFocus}
         onBlur={event => {
           if (upgradeTitle !== todo.title) {
@@ -86,7 +95,7 @@ export const TempTodoInput: React.FC<Props> = ({
         }}
         value={upgradeTitle}
         onChange={event => setUpgradeTitle(event.target.value)}
-        data-cy="NewTodoField"
+        data-cy="TodoTitleField"
         type="text"
         className="todoapp__new-todo"
       />

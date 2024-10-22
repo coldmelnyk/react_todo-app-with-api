@@ -31,14 +31,16 @@ export const Header: React.FC<Props> = ({
 
   return (
     <header className="todoapp__header">
-      <button
-        onClick={onTodosComplete}
-        type="button"
-        className={cn('todoapp__toggle-all', {
-          active: isAllTodosCompleted,
-        })}
-        data-cy="ToggleAllButton"
-      />
+      {todos.length > 0 && (
+        <button
+          onClick={onTodosComplete}
+          type="button"
+          className={cn('todoapp__toggle-all', {
+            active: isAllTodosCompleted,
+          })}
+          data-cy="ToggleAllButton"
+        />
+      )}
 
       <form onSubmit={event => onHeaderSubmit(event)}>
         <input
