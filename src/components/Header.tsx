@@ -9,6 +9,7 @@ interface Props {
   handleTodoTitle: Dispatch<React.SetStateAction<string>>;
   isLoading: boolean;
   todos: Todo[];
+  onTodosComplete: () => void;
 }
 
 export const Header: React.FC<Props> = ({
@@ -18,6 +19,7 @@ export const Header: React.FC<Props> = ({
   handleTodoTitle,
   isLoading,
   todos,
+  onTodosComplete,
 }) => {
   const fieldFocus = useRef<HTMLInputElement>(null);
 
@@ -30,6 +32,7 @@ export const Header: React.FC<Props> = ({
   return (
     <header className="todoapp__header">
       <button
+        onClick={onTodosComplete}
         type="button"
         className={cn('todoapp__toggle-all', {
           active: isAllTodosCompleted,

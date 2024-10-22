@@ -132,7 +132,7 @@ export const App: React.FC = () => {
     [todos, filterType],
   );
 
-  const handleTodoStatus = (todo: Todo) => {
+  const handleTodoStatus = (todo: Todo, toStatus: boolean) => {
     setIsLoading(true);
     setArrayOfTodoId([todo.id]);
 
@@ -140,7 +140,7 @@ export const App: React.FC = () => {
       id: todo.id,
       userId: USER_ID,
       title: todo.title,
-      completed: !todo.completed,
+      completed: toStatus,
     };
 
     updateTodoStatus(todoWithNewStatus)
@@ -156,6 +156,20 @@ export const App: React.FC = () => {
         setArrayOfTodoId([]);
         setIsLoading(false);
       });
+  };
+
+  const handleAllTodosToComplete = () => {
+    if (!isAllTodosCompleted) {
+      todos.forEach(todo => {
+        if (!todo.completed) {
+          handleTodoStatus(todo, true);
+        }
+      });
+    }
+
+    if (isAllTodosCompleted) {
+      todos.forEach(todo => handleTodoStatus(todo, false));
+    }
   };
 
   useEffect(() => uploadingTodos);
@@ -176,6 +190,7 @@ export const App: React.FC = () => {
           onHeaderSubmit={handleSubmit}
           handleTodoTitle={setNewTodoTitle}
           todos={todos}
+          onTodosComplete={handleAllTodosToComplete}
         />
 
         <TodoList

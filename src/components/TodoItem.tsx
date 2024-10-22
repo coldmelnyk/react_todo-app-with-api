@@ -7,7 +7,7 @@ import { Todo } from '../types/Todo';
 interface Props {
   todo: Todo;
   onDeleteTodo: (targetId: number) => void;
-  onChangeTodoStatus: (todo: Todo) => void;
+  onChangeTodoStatus: (todo: Todo, toStatus: boolean) => void;
   arrayOfTodoId: number[];
 }
 
@@ -27,7 +27,7 @@ export const TodoItem: React.FC<Props> = ({
     >
       <label className="todo__status-label">
         <input
-          onClick={() => onChangeTodoStatus(todo)}
+          onClick={() => onChangeTodoStatus(todo, !todo.completed)}
           data-cy="TodoStatus"
           type="checkbox"
           className="todo__status"

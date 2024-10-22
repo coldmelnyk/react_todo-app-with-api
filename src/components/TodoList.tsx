@@ -9,7 +9,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 interface Props {
   todos: Todo[];
   onDeleteTodo: (targetId: number) => void;
-  onChangeTodoStatus: (todo: Todo) => void;
+  onChangeTodoStatus: (todo: Todo, toStatus: boolean) => void;
   tempTodo: Todo | null;
   arrayOfTodoId: number[];
 }
