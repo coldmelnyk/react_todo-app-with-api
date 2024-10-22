@@ -1,4 +1,11 @@
-import React, { Dispatch, FormEvent, useState, FocusEvent } from 'react';
+import React, {
+  Dispatch,
+  FormEvent,
+  useState,
+  FocusEvent,
+  useRef,
+  useEffect,
+} from 'react';
 import { Todo } from '../types/Todo';
 import { updateTodo } from '../api/todos';
 import { ErrorMessage } from '../utils/helperFunctions';
@@ -9,6 +16,9 @@ interface Props {
   onErrorMessage: Dispatch<React.SetStateAction<ErrorMessage>>;
   onTodos: Dispatch<React.SetStateAction<Todo[]>>;
   onDeleteTodo: (targetId: number) => void;
+  onArrayOfTodoId: Dispatch<React.SetStateAction<number[]>>;
+  isLoading: boolean;
+  onLoading: Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const TempTodoInput: React.FC<Props> = ({
@@ -17,6 +27,9 @@ export const TempTodoInput: React.FC<Props> = ({
   onErrorMessage,
   onTodos,
   onDeleteTodo,
+  onArrayOfTodoId,
+  isLoading,
+  onLoading,
 }) => {
   const [upgradeTitle, setUpgradeTitle] = useState(todo.title);
 
@@ -26,6 +39,9 @@ export const TempTodoInput: React.FC<Props> = ({
     event.preventDefault();
 
     if (todo.title !== upgradeTitle && upgradeTitle) {
+      onLoading(true);
+      onArrayOfTodoId([todo.id]);
+
       return updateTodo({ ...todo, title: upgradeTitle })
         .then(updatedTodo => {
           onTodos(currentTodos =>
@@ -33,9 +49,12 @@ export const TempTodoInput: React.FC<Props> = ({
               currentTodo.id === updatedTodo.id ? updatedTodo : currentTodo,
             ),
           );
-        })
-        .finally(() => {
           onTodoId(null);
+        })
+        .catch(() => onErrorMessage(ErrorMessage.update))
+        .finally(() => {
+          onArrayOfTodoId([]);
+          onLoading(true);
         });
     }
 
@@ -43,14 +62,28 @@ export const TempTodoInput: React.FC<Props> = ({
       return onDeleteTodo(todo.id);
     }
 
-    return onErrorMessage(ErrorMessage.update);
+    return;
   };
+
+  const fieldFocus = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (fieldFocus.current) {
+      fieldFocus.current.focus();
+    }
+  }, [isLoading]);
 
   return (
     <form onSubmit={event => onSubmit(event)}>
       <input
-        autoFocus
-        onBlur={event => onSubmit(event)}
+        ref={fieldFocus}
+        onBlur={event => {
+          if (upgradeTitle !== todo.title) {
+            return onSubmit(event);
+          }
+
+          return onTodoId(null);
+        }}
         value={upgradeTitle}
         onChange={event => setUpgradeTitle(event.target.value)}
         data-cy="NewTodoField"

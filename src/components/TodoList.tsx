@@ -17,6 +17,9 @@ interface Props {
   onTodoId: Dispatch<React.SetStateAction<number | null>>;
   onErrorMessage: Dispatch<React.SetStateAction<ErrorMessage>>;
   onTodos: Dispatch<React.SetStateAction<Todo[]>>;
+  onArrayOfTodoId: Dispatch<React.SetStateAction<number[]>>;
+  isLoading: boolean;
+  onLoading: Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const TodoList: React.FC<Props> = ({
@@ -29,6 +32,9 @@ export const TodoList: React.FC<Props> = ({
   onTodoId,
   onErrorMessage,
   onTodos,
+  onArrayOfTodoId,
+  onLoading,
+  isLoading,
 }) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
@@ -45,6 +51,9 @@ export const TodoList: React.FC<Props> = ({
               tempTodoId={tempTodoId}
               onErrorMessage={onErrorMessage}
               onTodos={onTodos}
+              onArrayOfTodoId={onArrayOfTodoId}
+              onLoading={onLoading}
+              isLoading={isLoading}
             />
           </CSSTransition>
         ))}

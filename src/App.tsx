@@ -204,6 +204,9 @@ export const App: React.FC = () => {
           onTodoId={setTempTodoId}
           onErrorMessage={setErrorMessage}
           onTodos={setTodos}
+          onArrayOfTodoId={setArrayOfTodoId}
+          isLoading={isLoading}
+          onLoading={setIsLoading}
         />
 
         {!isTodosEmpty && (
