@@ -1,14 +1,20 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React from 'react';
+import React, { Dispatch } from 'react';
 import cn from 'classnames';
 
 import { Todo } from '../types/Todo';
+import { TempTodoInput } from './TempTodoInput';
+import { ErrorMessage } from '../utils/helperFunctions';
 
 interface Props {
   todo: Todo;
   onDeleteTodo: (targetId: number) => void;
   onChangeTodoStatus: (todo: Todo, toStatus: boolean) => void;
   arrayOfTodoId: number[];
+  tempTodoId: number | null;
+  onTodoId: Dispatch<React.SetStateAction<number | null>>;
+  onErrorMessage: Dispatch<React.SetStateAction<ErrorMessage>>;
+  onTodos: Dispatch<React.SetStateAction<Todo[]>>;
 }
 
 export const TodoItem: React.FC<Props> = ({
@@ -16,10 +22,13 @@ export const TodoItem: React.FC<Props> = ({
   onDeleteTodo,
   onChangeTodoStatus,
   arrayOfTodoId,
+  tempTodoId,
+  onTodoId,
+  onErrorMessage,
+  onTodos,
 }) => {
   return (
     <div
-      key={todo.id}
       data-cy="Todo"
       className={cn('todo', {
         completed: todo.completed,
@@ -35,17 +44,33 @@ export const TodoItem: React.FC<Props> = ({
         />
       </label>
 
-      <span data-cy="TodoTitle" className="todo__title">
-        {todo.title}
-      </span>
-      <button
-        onClick={() => onDeleteTodo(todo.id)}
-        type="button"
-        className="todo__remove"
-        data-cy="TodoDelete"
-      >
-        x
-      </button>
+      {tempTodoId === todo.id ? (
+        <TempTodoInput
+          todo={todo}
+          onTodoId={onTodoId}
+          onErrorMessage={onErrorMessage}
+          onTodos={onTodos}
+          onDeleteTodo={onDeleteTodo}
+        />
+      ) : (
+        <>
+          <span
+            onDoubleClick={() => onTodoId(todo.id)}
+            data-cy="TodoTitle"
+            className="todo__title"
+          >
+            {todo.title}
+          </span>
+          <button
+            onClick={() => onDeleteTodo(todo.id)}
+            type="button"
+            className="todo__remove"
+            data-cy="TodoDelete"
+          >
+            x
+          </button>
+        </>
+      )}
 
       <div
         data-cy="TodoLoader"

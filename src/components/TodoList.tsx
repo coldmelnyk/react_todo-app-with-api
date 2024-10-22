@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { Dispatch } from 'react';
 
 import { TodoItem } from './TodoItem';
 
 import { Todo } from '../types/Todo';
 import { TempTodoItem } from './TempTodoItem';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { ErrorMessage } from '../utils/helperFunctions';
 
 interface Props {
   todos: Todo[];
@@ -12,6 +13,10 @@ interface Props {
   onChangeTodoStatus: (todo: Todo, toStatus: boolean) => void;
   tempTodo: Todo | null;
   arrayOfTodoId: number[];
+  tempTodoId: number | null;
+  onTodoId: Dispatch<React.SetStateAction<number | null>>;
+  onErrorMessage: Dispatch<React.SetStateAction<ErrorMessage>>;
+  onTodos: Dispatch<React.SetStateAction<Todo[]>>;
 }
 
 export const TodoList: React.FC<Props> = ({
@@ -20,6 +25,10 @@ export const TodoList: React.FC<Props> = ({
   onChangeTodoStatus,
   tempTodo,
   arrayOfTodoId,
+  tempTodoId,
+  onTodoId,
+  onErrorMessage,
+  onTodos,
 }) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
@@ -32,6 +41,10 @@ export const TodoList: React.FC<Props> = ({
               onDeleteTodo={onDeleteTodo}
               onChangeTodoStatus={onChangeTodoStatus}
               arrayOfTodoId={arrayOfTodoId}
+              onTodoId={onTodoId}
+              tempTodoId={tempTodoId}
+              onErrorMessage={onErrorMessage}
+              onTodos={onTodos}
             />
           </CSSTransition>
         ))}

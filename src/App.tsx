@@ -5,7 +5,7 @@ import {
   addTodo,
   deleteTodo,
   getTodos,
-  updateTodoStatus,
+  updateTodo,
   USER_ID,
 } from './api/todos';
 
@@ -31,6 +31,7 @@ export const App: React.FC = () => {
   );
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
   const [arrayOfTodoId, setArrayOfTodoId] = useState<number[]>([]);
+  const [tempTodoId, setTempTodoId] = useState<number | null>(null);
 
   const clearAllCompletedTodos = () => {
     setIsLoading(true);
@@ -143,7 +144,7 @@ export const App: React.FC = () => {
       completed: toStatus,
     };
 
-    updateTodoStatus(todoWithNewStatus)
+    updateTodo(todoWithNewStatus)
       .then(patchedTodo =>
         setTodos(currentTodos =>
           currentTodos.map(currentTodo =>
@@ -199,6 +200,10 @@ export const App: React.FC = () => {
           onChangeTodoStatus={handleTodoStatus}
           tempTodo={tempTodo}
           arrayOfTodoId={arrayOfTodoId}
+          tempTodoId={tempTodoId}
+          onTodoId={setTempTodoId}
+          onErrorMessage={setErrorMessage}
+          onTodos={setTodos}
         />
 
         {!isTodosEmpty && (

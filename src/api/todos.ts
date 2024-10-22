@@ -16,6 +16,6 @@ export const deleteTodo = (postId: number) => {
   return client.delete(`/todos/${postId}`);
 };
 
-export const updateTodoStatus = (newTodo: Todo) => {
+export const updateTodo = (newTodo: Todo) => {
   return client.patch<Todo>(`/todos/${newTodo.id}`, newTodo);
 };
